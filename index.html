@@ -6,9 +6,9 @@
   <title>OROLUX | Swiss Luxury Watches</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="../my-watch-colne/frontend/src/styles/main.css" />
-  <link rel="stylesheet" href="/my-watch-colne/frontend/src/styles/shared/header.css">
-    <link rel="icon" type="image/x-icon" href="/my-watch-colne/frontend/src/images/logos/logo.png">
+  <link rel="stylesheet" href="./src/styles/main.css" />
+  <link rel="stylesheet" href="./src/styles/shared/header.css">
+  <link rel="icon" type="image/x-icon" href="./src/images/logos/logo.png">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
   <meta http-equiv="Content-Security-Policy" content="img-src * 'self' data: https:;">
@@ -23,10 +23,10 @@
           <a href="#" class="text-2xl font-bold " > OROLUX</a>
         </div>
         <div class="hidden md:flex space-x-8">
-          <a href="../my-watch-colne/frontend/src/views/store/product.html" class="text-gray-300 hover:text-white transition duration-300" style="color: rgb(255, 249, 249);">WATCHES</a>
-          <a href="../my-watch-colne/frontend/src/views/store/product.html" class="text-gray-300 hover:text-white transition duration-300" style="color: rgb(255, 255, 255);">COLLECTIONS</a>
-          <a href="../my-watch-colne/frontend/src/views/store/location.html" class="text-gray-300 hover:text-white transition duration-300"  style="color: rgb(255, 255, 255);">STORE LOCATOR</a>
-          <a href="../my-watch-colne/frontend/src/views/store/cart.html" class="text-gray-300 hover:text-white transition duration-300" style="color: rgb(255, 255, 255);">BAG</a>
+          <a href="./src/views/store/product.html" class="text-gray-300 hover:text-white transition duration-300">WATCHES</a>
+          <a href="./src/views/store/product.html" class="text-gray-300 hover:text-white transition duration-300">COLLECTIONS</a>
+          <a href="./src/views/store/location.html" class="text-gray-300 hover:text-white transition duration-300">STORE LOCATOR</a>
+          <a href="./src/views/store/cart.html" class="text-gray-300 hover:text-white transition duration-300">BAG</a>
         </div>
         <div class="md:hidden">
           <button id="menu-btn" class="text-white focus:outline-none">
@@ -36,10 +36,10 @@
       </div>
     </div>
     <div id="mobile-menu" class="hidden md:hidden  bg-opacity-90 px-4 py-2">
-      <a href="../my-watch-colne/frontend/src/views/store/product.html" class="block py-2 text-gray-300 hover:text-white">WATCHES</a>
-      <a href="../my-watch-colne/frontend/src/views/store/product.html" class="block py-2 text-gray-300 hover:text-white">COLLECTIONS</a>
-      <a href="../my-watch-colne/frontend/src/views/store/location.html" class="block py-2 text-gray-300 hover:text-white">STORE LOCATOR</a>
-      <a href="../my-watch-colne/frontend/src/views/store/cart.html" class="block py-2 text-gray-300 hover:text-white">BAG</a>
+      <a href="./src/views/store/product.html" class="block py-2 text-gray-300 hover:text-white">WATCHES</a>
+      <a href="./src/views/store/product.html" class="block py-2 text-gray-300 hover:text-white">COLLECTIONS</a>
+      <a href="./src/views/store/location.html" class="block py-2 text-gray-300 hover:text-white">STORE LOCATOR</a>
+      <a href="./src/views/store/cart.html" class="block py-2 text-gray-300 hover:text-white">BAG</a>
     </div>
   </nav>
 
@@ -337,16 +337,16 @@
   Do you have any questions?
 </div>
 
-  <script src="../my-watch-colne/frontend/src/js/main.js"></script>
-    <script src="../my-watch-colne/frontend/src/js/modules/admin/"></script>
+  <script src="./src/js/main.js"></script>
+    <script src="./src/js/modules/admin/index.js"></script>
 
-  <script src="../my-watch-colne/frontend/src/js/modules/shared/footer.js"></script>
+  <script src="./src/js/modules/shared/footer.js"></script>
   <script>
   document.addEventListener('DOMContentLoaded', function() {
     const videos = [
-      '/my-watch-colne/frontend/src/images/logos/first-animation.mp4',
-      '/my-watch-colne/frontend/src/images/logos/secound-anmation.mp4',
-      '/my-watch-colne/frontend/src/images/logos/therdvideo-anmation.mp4'
+      './src/images/logos/first-animation.mp4',
+      './src/images/logos/secound-anmation.mp4',
+      './src/images/logos/therdvideo-anmation.mp4'
     ];
     const randomVideo = videos[Math.floor(Math.random() * videos.length)];
     const heroVideo = document.getElementById('heroVideo');
