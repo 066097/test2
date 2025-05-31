@@ -89,7 +89,7 @@
                             <label for="remember-me" class="ml-2 block text-sm text-gray-700">Remember me</label>
                         </div>
                         <div class="text-sm">
-                            <a href="./my-watch-colne/frontend/src/views/admin/forgot-password.html" class="font-medium text-indigo-600 hover:text-indigo-500">Forgot password?</a>
+                            <a href="/my-watch-colne/frontend/src/views/admin/forgot-password.html" class="font-medium text-indigo-600 hover:text-indigo-500">Forgot password?</a>
                         </div>
                     </div>
                 </div>
@@ -304,7 +304,7 @@
                 localStorage.setItem('adminSessionToken', sessionToken);
                 
                 setTimeout(() => {
-                    window.location.href = './my-watch-colne/frontend/src/views/admin/index.html';
+                    window.location.href = '/my-watch-colne/frontend/src/views/admin/index.html';
                 }, 1000);
             } else {
                 const attempts = getLoginAttempts() + 1;
