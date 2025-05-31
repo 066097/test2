@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Two-Factor Authentication</title>
+            <link rel="stylesheet" href="/my-watch-colne/frontend/src/styles/admin/2fa.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Breadcrumb -->
+        <nav class="flex mb-6" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                <li class="inline-flex items-center">
+                    <a href="/dashboard" class="text-gray-700 hover:text-blue-600 text-sm font-medium">
+                        <i class="fas fa-home mr-2"></i>Dashboard
+                    </a>
+                </li>
+                <li>
+                    <div class="flex items-center">
+                        <i class="fas fa-chevron-right text-gray-400 mx-2 text-xs"></i>
+                        <a href="/account-settings" class="text-gray-700 hover:text-blue-600 text-sm font-medium">Account Settings</a>
+                    </div>
+                </li>
+                <li aria-current="page">
+                    <div class="flex items-center">
+                        <i class="fas fa-chevron-right text-gray-400 mx-2 text-xs"></i>
+                        <span class="text-blue-600 text-sm font-medium">2FA</span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Page Title -->
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Two-Factor Authentication</h1>
+
+        <!-- Main Card -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <!-- 2FA Status Section -->
+            <div class="mb-8">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">2FA Status</h2>
+                <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div>
+                        <p class="text-gray-600">Current Status: 
+                            <span id="2faStatus" class="font-medium text-blue-600">Disabled</span>
+                        </p>
+                        <p class="text-gray-500 text-sm mt-1">Last modified: <span id="lastModified">Never</span></p>
+                    </div>
+                    <button id="toggle2faBtn" class="mt-3 md:mt-0 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                        Enable 2FA
+                    </button>
+                </div>
+            </div>
+
+            <!-- Setup Options (Initially hidden) -->
+            <div id="setupOptions" class="hidden">
+                <!-- Password Verification Modal -->
+                <div id="passwordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                    <div class="bg-white rounded-lg p-6 w-full max-w-md">
+                        <h3 class="text-lg font-semibold mb-4">Verify Your Password</h3>
+                        <p class="text-gray-600 mb-4">For security reasons, please enter your password to continue.</p>
+                        <input type="password" id="verifyPassword" class="w-full px-3 py-2 border border-gray-300 rounded-md mb-4" placeholder="Enter your password">
+                        <div class="flex justify-end space-x-3">
+                            <button id="cancelPassword" class="px-4 py-2 border border-gray-300 rounded-md">Cancel</button>
+                            <button id="confirmPassword" class="px-4 py-2 bg-blue-600 text-white rounded-md">Confirm</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Authenticator App Setup -->
+                <div id="authenticatorSetup" class="mb-8 hidden">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Authenticator App Setup</h2>
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <div class="flex flex-col md:flex-row gap-6">
+                            <div class="flex-1">
+                                <h3 class="font-medium text-gray-700 mb-3">Step 1: Scan QR Code</h3>
+                                <div class="bg-white p-4 rounded border border-gray-200 inline-block mb-4">
+                                    <div id="qrCode" class="w-48 h-48 flex items-center justify-center">
+                                        <!-- QR code will be inserted here -->
+                                        <p class="text-gray-500">QR code will appear here</p>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 text-sm mb-4">
+                                    <i class="fas fa-info-circle text-blue-500 mr-1"></i>
+                                    Open your authenticator app (like Google Authenticator or Authy) and scan this QR code.
+                                </p>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-medium text-gray-700 mb-3">Step 2: Enter Verification Code</h3>
+                                <div class="mb-4">
+                                    <label for="verificationCode" class="block text-sm font-medium text-gray-700 mb-1">6-digit code</label>
+                                    <input type="text" id="verificationCode" maxlength="6" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="123456">
+                                    <p class="text-red-500 text-sm mt-1 hidden" id="codeError">Invalid verification code</p>
+                                </div>
+                                <button id="verifyCodeBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                                    Verify & Enable 2FA
+                                </button>
+                                <div class="mt-6">
+                                    <h3 class="font-medium text-gray-700 mb-2">Can't scan the QR code?</h3>
+                                    <p class="text-gray-600 text-sm mb-2">Enter this key manually:</p>
+                                    <div class="flex items-center bg-gray-100 p-2 rounded">
+                                        <code id="manualKey" class="text-sm font-mono">ABCD EFGH IJKL MNOP QRST UVWX YZ12 3456</code>
+                                        <button id="copyKeyBtn" class="ml-2 text-blue-600 hover:text-blue-800">
+                                            <i class="far fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SMS Setup (Optional) -->
+                <div id="smsSetup" class="mb-8 hidden">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">SMS Verification Setup</h2>
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <div class="mb-4">
+                            <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                            <input type="tel" id="phoneNumber" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="+1 (555) 123-4567">
+                        </div>
+                        <button id="sendSmsBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors mb-4">
+                            Send Verification Code
+                        </button>
+                        <div id="smsVerification" class="hidden">
+                            <div class="mb-4">
+                                <label for="smsCode" class="block text-sm font-medium text-gray-700 mb-1">6-digit SMS code</label>
+                                <input type="text" id="smsCode" maxlength="6" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="123456">
+                            </div>
+                            <button id="verifySmsBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                                Verify & Enable 2FA
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recovery Codes -->
+                <div id="recoveryCodes" class="hidden">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Recovery Codes</h2>
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-exclamation-circle text-yellow-400"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-yellow-700">
+                                    Save these recovery codes in a secure place. They can be used to access your account if you lose access to your authenticator device.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4" id="recoveryCodesList">
+                            <!-- Recovery codes will be inserted here -->
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button id="downloadCodesBtn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">
+                                <i class="fas fa-download mr-2"></i>Download
+                            </button>
+                            <button id="copyCodesBtn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">
+                                <i class="far fa-copy mr-2"></i>Copy to Clipboard
+                            </button>
+                            <button id="regenerateCodesBtn" class="px-4 py-2 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors">
+                                <i class="fas fa-sync-alt mr-2"></i>Regenerate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div id="toast" class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-md shadow-lg transform translate-y-10 opacity-0 transition-all duration-300 hidden">
+            <div class="flex items-center">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span id="toastMessage">Operation completed successfully</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // GSAP animations
+        gsap.from(".container", {duration: 0.5, opacity: 0, y: 20});
+        
+        // DOM elements
+        const toggle2faBtn = document.getElementById('toggle2faBtn');
+        const setupOptions = document.getElementById('setupOptions');
+        const passwordModal = document.getElementById('passwordModal');
+        const verifyPassword = document.getElementById('verifyPassword');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const cancelPassword = document.getElementById('cancelPassword');
+        const authenticatorSetup = document.getElementById('authenticatorSetup');
+        const smsSetup = document.getElementById('smsSetup');
+        const recoveryCodes = document.getElementById('recoveryCodes');
+        const verificationCode = document.getElementById('verificationCode');
+        const verifyCodeBtn = document.getElementById('verifyCodeBtn');
+        const manualKey = document.getElementById('manualKey');
+        const copyKeyBtn = document.getElementById('copyKeyBtn');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+        const phoneNumber = document.getElementById('phoneNumber');
+        const sendSmsBtn = document.getElementById('sendSmsBtn');
+        const smsVerification = document.getElementById('smsVerification');
+        const smsCode = document.getElementById('smsCode');
+        const verifySmsBtn = document.getElementById('verifySmsBtn');
+        const recoveryCodesList = document.getElementById('recoveryCodesList');
+        const downloadCodesBtn = document.getElementById('downloadCodesBtn');
+        const copyCodesBtn = document.getElementById('copyCodesBtn');
+        const regenerateCodesBtn = document.getElementById('regenerateCodesBtn');
+        const codeError = document.getElementById('codeError');
+
+        // State
+        let is2faEnabled = false;
+        let recoveryCodesGenerated = false;        // Generate and store recovery codes
+        function generateRecoveryCodes() {
+            const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const codes = Array(8).fill(0).map(() => {
+                const code = Array(12).fill(0)
+                    .map(() => chars[Math.floor(Math.random() * chars.length)])
+                    .join('');
+                return code.match(/.{1,4}/g).join('-');
+            });
+            localStorage.setItem('adminRecoveryCodes', JSON.stringify(codes));
+            return codes;
+        }
+        
+        // Initialize recovery codes if not exists
+        if (!localStorage.getItem('adminRecoveryCodes')) {
+            generateRecoveryCodes();
+        }
+        
+        const mockSecret = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123456';
+
+        // Event Listeners
+        toggle2faBtn.addEventListener('click', toggle2fa);
+        confirmPassword.addEventListener('click', verifyAdminPassword);
+        cancelPassword.addEventListener('click', () => {
+            passwordModal.classList.add('hidden');
+            verifyPassword.value = '';
+        });
+        verifyCodeBtn.addEventListener('click', verifyAuthenticatorCode);
+        copyKeyBtn.addEventListener('click', copyManualKey);
+        sendSmsBtn.addEventListener('click', sendSmsCode);
+        verifySmsBtn.addEventListener('click', verifySmsCode);
+        downloadCodesBtn.addEventListener('click', downloadRecoveryCodes);
+        copyCodesBtn.addEventListener('click', copyRecoveryCodes);
+        regenerateCodesBtn.addEventListener('click', showRegenerateWarning);
+
+        // Functions
+        function toggle2fa() {
+            if (is2faEnabled) {
+                // Show password modal to confirm disabling 2FA
+                passwordModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            } else {
+                // Show setup options
+                setupOptions.classList.remove('hidden');
+                authenticatorSetup.classList.remove('hidden');
+                gsap.from("#authenticatorSetup", {duration: 0.5, opacity: 0, y: 20});
+
+                // Generate a new secret for this session/user
+                const secret = randomBase32Secret();
+                manualKey.textContent = secret;
+
+                // FIX: Get the qrCodeDiv here
+                const qrCodeDiv = document.getElementById('qrCode');
+                // Generate QR code with the new secret
+                const otpauthUrl = `otpauth://totp/AdminPanel:admin@example.com?secret=${secret}&issuer=AdminPanel`;
+                qrCodeDiv.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(otpauthUrl)}" alt="QR Code">`;
+            }
+        }
+
+        function verifyAdminPassword() {
+            const password = verifyPassword.value;
+            if (!password) {
+                showToast('Please enter your password', 'error');
+                return;
+            }
+
+            // In a real app, this would be an API call to verify the password
+            setTimeout(() => {
+                passwordModal.classList.add('hidden');
+                verifyPassword.value = '';
+                
+                if (is2faEnabled) {
+                    // Disable 2FA
+                    is2faEnabled = false;
+                    update2faStatus();
+                    setupOptions.classList.add('hidden');
+                    showToast('Two-factor authentication has been disabled', 'success');
+                } else {
+                    // Already handled in toggle2fa
+                }
+            }, 500);
+        }
+
+        function generateQRCode() {
+            // In a real app, this would be generated by the backend
+            // For demo purposes, we'll just show a placeholder
+            const qrCodeDiv = document.getElementById('qrCode');
+            qrCodeDiv.innerHTML = '<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=otpauth://totp/AdminPanel:admin%40example.com?secret=' + mockSecret + '&issuer=AdminPanel" alt="QR Code">';
+            gsap.from("#qrCode img", {duration: 0.5, opacity: 0, scale: 0.9});
+        }
+
+        function verifyAuthenticatorCode() {
+            const code = verificationCode.value;
+            if (!code || code.length !== 6 || !/^\d+$/.test(code)) {
+                codeError.classList.remove('hidden');
+                return;
+            }
+
+            // In a real app, this would verify with the backend
+            // For demo, we'll just accept any 6-digit code
+            setTimeout(() => {                codeError.classList.add('hidden');
+                is2faEnabled = true;
+                update2faStatus();
+                authenticatorSetup.classList.add('hidden');
+                recoveryCodes.classList.remove('hidden');
+                // Generate new recovery codes when 2FA is enabled
+                generateRecoveryCodes();
+                displayRecoveryCodes();
+                showToast('Two-factor authentication has been enabled', 'success');
+            }, 500);
+        }
+
+        function update2faStatus() {
+            const statusElement = document.getElementById('2faStatus');
+            const lastModified = document.getElementById('lastModified');
+            
+            if (is2faEnabled) {
+                statusElement.textContent = 'Enabled';
+                statusElement.className = 'font-medium text-green-600';
+                toggle2faBtn.textContent = 'Disable 2FA';
+                toggle2faBtn.className = 'mt-3 md:mt-0 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors';
+                lastModified.textContent = new Date().toLocaleString();
+            } else {
+                statusElement.textContent = 'Disabled';
+                statusElement.className = 'font-medium text-blue-600';
+                toggle2faBtn.textContent = 'Enable 2FA';
+                toggle2faBtn.className = 'mt-3 md:mt-0 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors';
+            }
+        }
+
+        function copyManualKey() {
+            navigator.clipboard.writeText(mockSecret.replace(/\s/g, ''));
+            showToast('Secret key copied to clipboard', 'success');
+        }
+
+        function sendSmsCode() {
+            const phone = phoneNumber.value;
+            if (!phone) {
+                showToast('Please enter a phone number', 'error');
+                return;
+            }
+
+            // In a real app, this would send an SMS
+            setTimeout(() => {
+                smsVerification.classList.remove('hidden');
+                showToast('Verification code sent to your phone', 'success');
+            }, 1000);
+        }
+
+        function verifySmsCode() {
+            const code = smsCode.value;
+            if (!code || code.length !== 6 || !/^\d+$/.test(code)) {
+                showToast('Please enter a valid 6-digit code', 'error');
+                return;
+            }
+
+            // In a real app, this would verify with the backend
+            setTimeout(() => {                is2faEnabled = true;
+                update2faStatus();
+                smsSetup.classList.add('hidden');
+                recoveryCodes.classList.remove('hidden');
+                // Generate new recovery codes when 2FA is enabled via SMS
+                generateRecoveryCodes();
+                displayRecoveryCodes();
+                showToast('Two-factor authentication has been enabled', 'success');
+            }, 500);
+        }        function displayRecoveryCodes() {
+            if (recoveryCodesGenerated) return;
+            
+            const codes = JSON.parse(localStorage.getItem('adminRecoveryCodes') || '[]');
+            recoveryCodesList.innerHTML = '';
+            codes.forEach(code => {
+                const codeElement = document.createElement('div');
+                codeElement.className = 'bg-white p-2 rounded border border-gray-200 text-center font-mono';
+                codeElement.textContent = code;
+                recoveryCodesList.appendChild(codeElement);
+            });
+            
+            recoveryCodesGenerated = true;
+            gsap.from("#recoveryCodesList div", {
+                duration: 0.3,
+                opacity: 0,
+                y: 10,
+                stagger: 0.05
+            });
+        }
+
+        function downloadRecoveryCodes() {            const codes = JSON.parse(localStorage.getItem('adminRecoveryCodes') || '[]');
+            const codesText = codes.join('\n');
+            const blob = new Blob([codesText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'admin-panel-recovery-codes.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('Recovery codes downloaded', 'success');
+        }
+
+        function copyRecoveryCodes() {            const codes = JSON.parse(localStorage.getItem('adminRecoveryCodes') || '[]');
+            const codesText = codes.join('\n');
+            navigator.clipboard.writeText(codesText);
+            showToast('Recovery codes copied to clipboard', 'success');
+        }        function showRegenerateWarning() {
+            if (confirm('Are you sure you want to regenerate recovery codes? Your old codes will no longer work.')) {
+                // Generate new codes and save them
+                generateRecoveryCodes();
+                showToast('New recovery codes generated', 'success');
+                recoveryCodesGenerated = false;
+                displayRecoveryCodes();
+            }
+        }
+
+        function showToast(message, type) {
+            toastMessage.textContent = message;
+            toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-md shadow-lg transform translate-y-10 opacity-0 transition-all duration-300 flex items-center ${type === 'error' ? 'bg-red-500' : 'bg-green-500'} text-white`;
+            toast.classList.remove('hidden');
+            
+            gsap.to(toast, {
+                duration: 0.3,
+                y: 0,
+                opacity: 1,
+                ease: "power2.out"
+            });
+            
+            setTimeout(() => {
+                gsap.to(toast, {
+                    duration: 0.3,
+                    y: 10,
+                    opacity: 0,
+                    ease: "power2.in",
+                    onComplete: () => toast.classList.add('hidden')
+                });
+            }, 3000);
+        }
+
+        function randomBase32Secret(length = 32) {
+          const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+          let secret = '';
+          for (let i = 0; i < length; i++) {
+            secret += chars.charAt(Math.floor(Math.random() * chars.length));
+          }
+          return secret;
+        }
+    </script>
+            <script src="/my-watch-colne/frontend/src/js/modules/admin/2fa.js"></script>
+
+</body>
+</html>
