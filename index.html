@@ -6,9 +6,10 @@
   <title>OROLUX | Swiss Luxury Watches</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="./src/styles/main.css" />
-  <link rel="stylesheet" href="./src/styles/shared/header.css">
-  <link rel="icon" type="image/x-icon" href="./src/images/logos/logo.png">
+  <!-- تصحيح مسارات CSS -->
+  <link rel="stylesheet" href="/src/styles/main.css" />
+  <link rel="stylesheet" href="/src/styles/shared/header.css">
+  <link rel="icon" type="image/x-icon" href="/src/images/logos/logo.png">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
   <meta http-equiv="Content-Security-Policy" content="img-src * 'self' data: https:;">
@@ -23,10 +24,10 @@
           <a href="#" class="text-2xl font-bold " > OROLUX</a>
         </div>
         <div class="hidden md:flex space-x-8">
-          <a href="./src/views/store/product.html" class="text-gray-300 hover:text-white transition duration-300">WATCHES</a>
-          <a href="./src/views/store/product.html" class="text-gray-300 hover:text-white transition duration-300">COLLECTIONS</a>
-          <a href="./src/views/store/location.html" class="text-gray-300 hover:text-white transition duration-300">STORE LOCATOR</a>
-          <a href="./src/views/store/cart.html" class="text-gray-300 hover:text-white transition duration-300">BAG</a>
+          <a href="/src/views/store/product.html">WATCHES</a>
+          <a href="/src/views/store/product.html">COLLECTIONS</a>
+          <a href="/src/views/store/location.html">STORE LOCATOR</a>
+          <a href="/src/views/store/cart.html">BAG</a>
         </div>
         <div class="md:hidden">
           <button id="menu-btn" class="text-white focus:outline-none">
@@ -35,11 +36,11 @@
         </div>
       </div>
     </div>
-    <div id="mobile-menu" class="hidden md:hidden  bg-opacity-90 px-4 py-2">
-      <a href="./src/views/store/product.html" class="block py-2 text-gray-300 hover:text-white">WATCHES</a>
-      <a href="./src/views/store/product.html" class="block py-2 text-gray-300 hover:text-white">COLLECTIONS</a>
-      <a href="./src/views/store/location.html" class="block py-2 text-gray-300 hover:text-white">STORE LOCATOR</a>
-      <a href="./src/views/store/cart.html" class="block py-2 text-gray-300 hover:text-white">BAG</a>
+    <div id="mobile-menu" class="hidden md:hidden bg-opacity-90 px-4 py-2">
+      <a href="/src/views/store/product.html">WATCHES</a>
+      <a href="/src/views/store/product.html">COLLECTIONS</a>
+      <a href="/src/views/store/location.html">STORE LOCATOR</a>
+      <a href="/src/views/store/cart.html">BAG</a>
     </div>
   </nav>
 
@@ -145,7 +146,7 @@
               <p class="text-lg">100 meters</p>
             </div>
           </div>
-          <a href="../my-watch-colne/frontend/src/views/store/product.html" class="bg-transparent border border-white text-white px-8 py-3 hover:bg-white hover:text-black transition duration-300 inline-block">LEARN MORE</a>
+          <a href="/src/views/store/product.html" class="bg-transparent border border-white text-white px-8 py-3 hover:bg-white hover:text-black transition duration-300 inline-block">LEARN MORE</a>
         </div>
         <div class="md:w-1/2">
           <img src="https://content.rolex.com/dam/2022/upright-bba/m116500ln-0001.png?impolicy=main-configurator&imwidth=800" alt="Rolex Daytona" class="w-full max-w-md mx-auto">
@@ -258,17 +259,17 @@
         <div>
           <h3 class="text-lg font-bold mb-4">CUSTOMER SERVICE</h3>
           <ul class="space-y-2">
-            <li><a href="./src/views/store/contact.html" class="text-gray-400 hover:text-white">Contact Us</a></li>
-            <li><a href="./src/views/store/FQL.html" class="text-gray-400 hover:text-white">FAQ</a></li>
-            <li><a href="./src/views/store/" class="text-gray-400 hover:text-white">Warranty</a></li>
+            <li><a href="/src/views/store/contact.html" class="text-gray-400 hover:text-white">Contact Us</a></li>
+            <li><a href="/src/views/store/FQL.html" class="text-gray-400 hover:text-white">FAQ</a></li>
+            <li><a href="/src/views/store/warranty.html" class="text-gray-400 hover:text-white">Warranty</a></li>
           </ul>
         </div>
         <div>
           <h3 class="text-lg font-bold mb-4">LEGAL</h3>
           <ul class="space-y-2">
-            <li><a href="./src/views/store/terms-conditions.html" class="text-gray-400 hover:text-white">Terms & Conditions</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
-            <li><a href="./src/views/store/cookie-policy.html" class="text-gray-400 hover:text-white">Cookie Policy</a></li>
+            <li><a href="/src/views/store/terms-conditions.html" class="text-gray-400 hover:text-white">Terms & Conditions</a></li>
+            <li><a href="/src/views/store/privacy-policy.html" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
+            <li><a href="/src/views/store/cookie-policy.html" class="text-gray-400 hover:text-white">Cookie Policy</a></li>
           </ul>
         </div>
         <div>
@@ -295,9 +296,9 @@
   <!-- Support Widget -->
 <div class="support-widget">
   <div class="support-links">
-    <a href="./src/views/store/FQL.html">FAQ on orders</a>
-    <a href="./src/views/store/FQL.html">FAQ on shipment</a>
-    <a href="./src/views/store/terms-conditions.html">Warranty</a>
+    <a href="/src/views/store/FQL.html">FAQ on orders</a>
+    <a href="/src/views/store/FQL.html">FAQ on shipment</a>
+    <a href="/src/views/store/terms-conditions.html">Warranty</a>
   </div>
 
   <div class="contact-options">
@@ -337,14 +338,14 @@
   Do you have any questions?
 </div>
 
-  <script src="./src/js/main.js"></script>
-    <script src="./src/js/modules/shared/header.js"></script>
+  <script src="/src/js/main.js"></script>
+  <script src="/src/js/modules/shared/header.js"></script>
   <script>
   document.addEventListener('DOMContentLoaded', function() {
     const videos = [
-      './src/images/logos/first-animation.mp4',
-      './src/images/logos/secound-anmation.mp4',
-      './src/images/logos/therdvideo-anmation.mp4'
+      '/src/images/logos/first-animation.mp4',
+      '/src/images/logos/secound-anmation.mp4',
+      '/src/images/logos/therdvideo-anmation.mp4'
     ];
     const randomVideo = videos[Math.floor(Math.random() * videos.length)];
     const heroVideo = document.getElementById('heroVideo');
